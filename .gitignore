@@ -1,31 +1,18 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# 中国象棋 Web 项目 · 零依赖原生 JS
+node_modules/
+dist/
+build/
 
-# Other files and folders
-.settings/
-
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
-
-#过滤掉不想要文件和文件夹
-*.exe
-*.sln
-*.vcxproj
-*.filters
+# 编辑器与系统文件
+.vs/
+.vscode/
+.idea/
 *.user
 *.suo
-*.db
-*.ipch
-Debug/
-.vs
-Release/
+Desktop.ini
+Thumbs.db
+.DS_Store
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# 临时与日志
+*.log
+*.tmp

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>环境自检 · 双击本页应全绿</title>
+</head>
+<body>
+<h3>环境自检（每人 pull 之后先打开本页）</h3>
+<p>本页验证三件事：文件能双击打开（file:// 不被拦）、各模块脚本按顺序加载、CC.Test 断言可用。</p>
+<script src="test-kit.js"></script>
+<script src="../core/board.js"></script>
+<script src="../core/rules.js"></script>
+<script src="../core/validate.js"></script>
+<script src="../core/game.js"></script>
+<script src="../core/notation.js"></script>
+<script src="../ai/engine.js"></script>
+<script src="../ui/board-view.js"></script>
+<script src="../app.js"></script>
+<script>
+  CC.Test.ok(typeof CC === 'object', '全局命名空间 CC 存在');
+  CC.Test.ok(typeof CC.Board === 'object', 'CC.Board 已加载');
+  CC.Test.ok(typeof CC.Rules === 'object', 'CC.Rules 已加载');
+  CC.Test.ok(typeof CC.Check === 'object', 'CC.Check 已加载');
+  CC.Test.ok(typeof CC.Game === 'object', 'CC.Game 已加载');
+  CC.Test.ok(typeof CC.Notation === 'object', 'CC.Notation 已加载');
+  CC.Test.ok(typeof CC.AI === 'object', 'CC.AI 已加载');
+  CC.Test.ok(typeof CC.View === 'object', 'CC.View 已加载');
+  CC.Test.ok(typeof CC.App === 'object', 'CC.App 已加载');
+
+  // 各模块骨架尚未实现，此处只验证"骨架存在且为函数"，实现后请在各自的 test 页替换为真实用例
+  ['Board.idx', 'Rules.movesFor', 'Check.legalMoves', 'Game.create', 'Notation.toChinese', 'AI.randomMove', 'View.render', 'App.start']
+    .forEach(function (name) {
+      const parts = name.split('.');
+      CC.Test.ok(typeof CC[parts[0]][parts[1]] === 'function', '接口存在：CC.' + name);
+    });
+
+  CC.Test.report();
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+# CODEOWNERS —— 文件独占的自动化执行
+# 规则：PR 改动了某人"独占"的文件，GitHub 会自动请求他评审，他不批准就合不进去。
+# 使用方法：把下面的 @替换成每个人的 GitHub 用户名（A 是带头人的用户名）。
+
+# === A（架构集成） ===
+/app.js                        @A-username
+/core/board.js                 @A-username
+/test/test-kit.js              @A-username
+/docs/接口契约.md              @A-username
+/docs/六人分工方案.md          @A-username
+/docs/AI编码指令.md            @A-username
+
+# === B（规则引擎） ===
+/core/rules.js                 @B-username
+
+# === C（对局控制） ===
+/core/validate.js              @C-username
+/core/game.js                  @C-username
+
+# === D（界面交互） ===
+/ui/                           @D-username
+/index.html                    @D-username
+
+# === E（AI 算法） ===
+/ai/                           @E-username
+
+# === F（棋谱与质量） ===
+/core/notation.js              @F-username
+/test/fixtures/                @F-username
+/test/                         @A-username @F-username

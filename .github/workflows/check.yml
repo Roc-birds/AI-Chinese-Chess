@@ -1,0 +1,62 @@
+# 仓库统一检查 —— 每个push/PR自动跑，代替"人肉提醒"
+# 做两件事：1) node --check 校验所有 js 语法；2) 静态扫描契约禁用项。
+# 零依赖，不需要装 npm 包，GitHub Actions 自带的 node 就能跑。
+
+name: repo-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: JS 语法检查（node --check，不执行只验证）
+        run: |
+          fail=0
+          for f in $(git ls-files '*.js'); do
+            if ! node --check "$f"; then
+              echo "::error file=$f::语法错误"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: 契约禁用项扫描
+        run: |
+          fail=0
+          check() {
+            local pattern="$1" label="$2"
+            local hits
+            hits=$(grep -rn --include='*.js' --include='*.html' -E "$pattern" core/ ai/ ui/ app.js 2>/dev/null || true)
+            if [ -n "$hits" ]; then
+              echo "::error title=契约违规: $label::$hits"
+              fail=1
+            fi
+          }
+          # 1. ES Module 语法（file:// 下会挂）
+          check '(^|[^.\w])(import|export)([[:space:]]|\()' "禁止 import/export（用 IIFE + 全局 CC）"
+          # 2. 第三方依赖
+          check 'require\(|from[[:space:]]+["'\'']https?:' "禁止引入第三方库/远程模块"
+          # 3. row/col 坐标（统一用 x/y）
+          check '\b(row|col|rowIndex|colIndex)\b' "禁止 row/col，统一 (x, y)"
+          # 4. var / == 宽松比较
+          check '\bvar[[:space:]]+\w' "禁止 var，用 const/let"
+          # 5. 自造错误码：抓出所有 reason: 'E_XXX'，过滤掉契约允许的 8 个，剩下的即违规
+          bad_codes=$(grep -rn --include='*.js' -E "reason:[[:space:]]*['\"][A-Za-z_]+['\"]" core/ ai/ ui/ app.js 2>/dev/null \
+            | grep -vE "E_NOT_YOUR_TURN|E_EMPTY_CELL|E_OWN_PIECE|E_OPPONENT_PIECE|E_OUT_OF_BOARD|E_ILLEGAL_MOVE|E_SELF_CHECK|E_GAME_OVER" || true)
+          if [ -n "$bad_codes" ]; then
+            echo "::error title=契约违规: 自造错误码::$bad_codes"
+            fail=1
+          fi
+          # 6. TODO / 半截代码
+          check 'TODO|FIXME|其余同上' "存在 TODO 或省略代码，禁止合并"
+          exit $fail
