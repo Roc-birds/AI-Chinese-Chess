@@ -42,5 +42,6 @@ git push origin <你的分支>              # 5. 推送并发 PR
 
 ## 分支说明
 
-`main` 受保护，只接受 PR。个人长期分支：`fwc / hsy / hyp / tmh / ycq / zzn`，
-每天开工前先 `rebase main`。
+`main` 受保护，**只接受 PR，且合并权集中在 A（@Roc-birds）**：
+五个人只负责"推自己的分支 + 发 PR"，评审合并统一由 A 操作。
+个人长期分支：`fwc / hsy / hyp / tmh / ycq / zzn`，每天开工前先 `rebase main`。
